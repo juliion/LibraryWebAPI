@@ -24,7 +24,18 @@ namespace LibraryBLL.Services
 
         public IEnumerable<BookDTO>? GetAllBooksOrderBy(string? order)
         {
-            throw new NotImplementedException();
+            var books = _dbContext.Books;
+           
+            IEnumerable<Book>? orderedBooks;
+            if (order == "author")
+                orderedBooks = books?.OrderBy(book => book.Author);
+            else if (order == "title")
+                orderedBooks = books?.OrderBy(book => book.Title);
+            else
+                orderedBooks = books;
+
+            var booksDTO = _mapper.Map<IEnumerable<Book>?, IEnumerable<BookDTO>?>(orderedBooks);
+            return booksDTO;
         }
         public BookDetailsDTO GetBookDetails(int id)
         {

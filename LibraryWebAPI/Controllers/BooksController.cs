@@ -15,5 +15,14 @@ namespace LibraryWebAPI.Controllers
         {
             _booksService = booksService;
         }
+
+        [HttpGet]
+        public JsonResult GetAllBooks(string? order)
+        {
+            var allBooks = _booksService.GetAllBooksOrderBy(order);
+            return new JsonResult(Ok(allBooks));
+        }
+
+        
     }
 }
