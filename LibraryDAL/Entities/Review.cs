@@ -7,6 +7,6 @@
         public string Reviewer { get; set; } = null!;
         public int BookId { get; set;}
 
-        public virtual Book Book { get; set; } = null!;
+        public Book Book { get; set; } = null!;
     }
 }

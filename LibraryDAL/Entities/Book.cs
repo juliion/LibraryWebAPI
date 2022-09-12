@@ -9,7 +9,7 @@
         public string Author { get; set; } = null!;
         public string Genre { get; set; } = null!;
 
-        public virtual IEnumerable<Rating>? Ratings { get; set; }
-        public virtual IEnumerable<Review>? Reviews { get; set; }
+        public List<Rating> Ratings { get; set; } = new();
+        public List<Review> Reviews { get; set; } = new();
     }
 }
