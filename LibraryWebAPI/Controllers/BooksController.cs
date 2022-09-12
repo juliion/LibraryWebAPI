@@ -23,7 +23,7 @@ namespace LibraryWebAPI.Controllers
             return new JsonResult(Ok(allBooks));
         }
 
-        [HttpGet("api/recommended")]
+        [HttpGet("recommended")]
         public JsonResult GetTop10Books(string? genre)
         {
             int minReviewNum = 1;
