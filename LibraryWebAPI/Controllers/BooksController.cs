@@ -30,5 +30,14 @@ namespace LibraryWebAPI.Controllers
             var top10Books = _booksService.GetTop10Books(minReviewNum, genre);
             return new JsonResult(Ok(top10Books));
         }
+
+        [HttpGet("{id}")]
+        public JsonResult GetBookDetails(int id)
+        {
+            var bookDetails = _booksService.GetBookDetails(id);
+            if (bookDetails == null)
+                return new JsonResult(NotFound());
+            return new JsonResult(Ok(bookDetails));
+        }
     }
 }

@@ -37,9 +37,11 @@ namespace LibraryBLL.Services
             var booksDTO = _mapper.Map<IEnumerable<Book>?, IEnumerable<BookDTO>?>(orderedBooks);
             return booksDTO;
         }
-        public BookDetailsDTO GetBookDetails(int id)
+        public BookDetailsDTO? GetBookDetails(int id)
         {
-            throw new NotImplementedException();
+            Book? book = _dbContext.Books?.Find(id);
+            BookDetailsDTO? bookDetailsDTO = _mapper.Map<Book?, BookDetailsDTO?>(book);
+            return bookDetailsDTO;
         }
 
         public IEnumerable<BookDTO>? GetTop10Books(decimal minReviewsNum, string? genre)
