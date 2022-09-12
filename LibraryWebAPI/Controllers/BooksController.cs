@@ -23,6 +23,12 @@ namespace LibraryWebAPI.Controllers
             return new JsonResult(Ok(allBooks));
         }
 
-        
+        [HttpGet("api/recommended")]
+        public JsonResult GetTop10Books(string? genre)
+        {
+            int minReviewNum = 1;
+            var top10Books = _booksService.GetTop10Books(minReviewNum, genre);
+            return new JsonResult(Ok(top10Books));
+        }
     }
 }

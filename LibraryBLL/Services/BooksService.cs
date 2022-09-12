@@ -44,7 +44,16 @@ namespace LibraryBLL.Services
 
         public IEnumerable<BookDTO>? GetTop10Books(decimal minReviewsNum, string? genre)
         {
-            throw new NotImplementedException();
+            var books = _dbContext.Books?.AsEnumerable();
+
+            if (genre != null && books != null)
+                books = books.Where(book => book.Genre == genre);
+
+            var booksDTO = _mapper.Map<IEnumerable<Book>?, IEnumerable<BookDTO>?>(books);
+            return booksDTO?
+                .Where(bookDTO => bookDTO.ReviewsNumber > minReviewsNum)
+                .OrderByDescending(bookDTO => bookDTO.Rating)
+                .Take(10);
         }
 
         public void RateBook(RateBookDTO rateBookDTO)
