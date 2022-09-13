@@ -20,6 +20,7 @@ namespace LibraryBLL.Mappings
 
             CreateMap<SaveBookDTO, Book>();
             CreateMap<SaveReviewDTO, Review>();
+            CreateMap<RateBookDTO, Rating>();
         }
         private decimal CountAverageRating(List<Rating> ratings)
         {

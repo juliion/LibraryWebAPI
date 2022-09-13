@@ -16,11 +16,13 @@ namespace LibraryWebAPI.Controllers
         private readonly IBooksService _booksService;
         private readonly IConfiguration _configuration;
         private IValidator<SaveBookDTO> _bookValidator;
-        public BooksController(IBooksService booksService, IConfiguration configuration, IValidator<SaveBookDTO> bookValidator)
+        private IValidator<RateBookDTO> _ratingValidator;
+        public BooksController(IBooksService booksService, IConfiguration configuration, IValidator<SaveBookDTO> bookValidator, IValidator<RateBookDTO> ratingValidator)
         {
             _booksService = booksService;
             _configuration = configuration;
             _bookValidator = bookValidator;
+            _ratingValidator = ratingValidator;
         }
 
         [HttpGet]
@@ -59,7 +61,7 @@ namespace LibraryWebAPI.Controllers
             {
                 _booksService.DeleteBook(id);
             }
-            catch(NullReferenceException)
+            catch (NullReferenceException)
             {
                 return new JsonResult(NotFound());
             }
@@ -70,10 +72,27 @@ namespace LibraryWebAPI.Controllers
         public JsonResult Save(SaveBookDTO saveBookDTO)
         {
             var validationRes = _bookValidator.Validate(saveBookDTO);
-            if(!validationRes.IsValid)
+            if (!validationRes.IsValid)
                 return new JsonResult(validationRes);
             _booksService.SaveNewBook(saveBookDTO);
             return new JsonResult(Ok(saveBookDTO.Id));
+        }
+
+        [HttpPut("{id}/rate")]
+        public JsonResult RateBook(int id, RateBookDTO rateBookDTO)
+        {
+            var validationRes = _ratingValidator.Validate(rateBookDTO);
+            if (!validationRes.IsValid)
+                return new JsonResult(validationRes);
+            try
+            {
+                _booksService.RateBook(id, rateBookDTO);
+            }
+            catch (NullReferenceException)
+            {
+                return new JsonResult(NotFound());
+            }
+            return new JsonResult(Ok());
         }
     }
 }

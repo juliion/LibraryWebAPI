@@ -61,9 +61,15 @@ namespace LibraryBLL.Services
                 .Take(10);
         }
 
-        public void RateBook(RateBookDTO rateBookDTO)
+        public void RateBook(int bookId, RateBookDTO rateBookDTO)
         {
-            throw new NotImplementedException();
+            var book = _dbContext.Books?.Find(bookId);
+            if (book == null)
+                throw new NullReferenceException();
+            var rating = _mapper.Map<RateBookDTO, Rating>(rateBookDTO);
+            _dbContext.Ratings?.Add(rating);
+            book.Ratings.Add(rating);
+            _dbContext.SaveChanges();
         }
 
         public void SaveNewBook(SaveBookDTO saveBookDTO)

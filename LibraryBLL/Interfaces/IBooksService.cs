@@ -10,6 +10,6 @@ namespace LibraryBLL.Interfaces
         public BookDetailsDTO? GetBookDetails(int id);
         public void DeleteBook(int id);
         public void SaveNewBook(SaveBookDTO saveBookDTO);
-        public void RateBook(RateBookDTO rateBookDTO);
+        public void RateBook(int bookId, RateBookDTO rateBookDTO);
     }
 }
