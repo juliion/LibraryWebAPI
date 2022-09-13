@@ -81,5 +81,17 @@ namespace LibraryBLL.Services
             _dbContext.Books?.Add(book);
             _dbContext.SaveChanges();
         }
+
+        public void SaveReview(int bookId, SaveReviewDTO saveReviewDTO)
+        {
+            var book = _dbContext.Books?.Find(bookId);
+            if (book == null)
+                throw new NullReferenceException();
+            var review = _mapper.Map<SaveReviewDTO, Review>(saveReviewDTO);
+            _dbContext.Reviews?.Add(review);
+            book.Reviews.Add(review);
+            _dbContext.SaveChanges();
+        }
+
     }
 }

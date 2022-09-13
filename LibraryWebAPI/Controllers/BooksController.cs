@@ -17,12 +17,14 @@ namespace LibraryWebAPI.Controllers
         private readonly IConfiguration _configuration;
         private IValidator<SaveBookDTO> _bookValidator;
         private IValidator<RateBookDTO> _ratingValidator;
-        public BooksController(IBooksService booksService, IConfiguration configuration, IValidator<SaveBookDTO> bookValidator, IValidator<RateBookDTO> ratingValidator)
+        private IValidator<SaveReviewDTO> _reviewValidator;
+        public BooksController(IBooksService booksService, IConfiguration configuration, IValidator<SaveBookDTO> bookValidator, IValidator<RateBookDTO> ratingValidator, IValidator<SaveReviewDTO> reviewValidator)
         {
             _booksService = booksService;
             _configuration = configuration;
             _bookValidator = bookValidator;
             _ratingValidator = ratingValidator;
+            _reviewValidator = reviewValidator;
         }
 
         [HttpGet]
@@ -87,6 +89,23 @@ namespace LibraryWebAPI.Controllers
             try
             {
                 _booksService.RateBook(id, rateBookDTO);
+            }
+            catch (NullReferenceException)
+            {
+                return new JsonResult(NotFound());
+            }
+            return new JsonResult(Ok());
+        }
+
+        [HttpPut("{id}/review")]
+        public JsonResult SaveReview(int id, SaveReviewDTO saveReviewDTO)
+        {
+            var validationRes = _reviewValidator.Validate(saveReviewDTO);
+            if (!validationRes.IsValid)
+                return new JsonResult(validationRes);
+            try
+            {
+                _booksService.SaveReview(id, saveReviewDTO);
             }
             catch (NullReferenceException)
             {
