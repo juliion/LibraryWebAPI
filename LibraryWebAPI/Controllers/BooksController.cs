@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using LibraryBLL.DTOs.Requests;
 using LibraryBLL.DTOs.Responses;
 using LibraryBLL.Interfaces;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace LibraryWebAPI.Controllers
 {
@@ -11,9 +13,11 @@ namespace LibraryWebAPI.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IBooksService _booksService;
-        public BooksController(IBooksService booksService)
+        private readonly IConfiguration _configuration;
+        public BooksController(IBooksService booksService, IConfiguration configuration)
         {
             _booksService = booksService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -38,6 +42,25 @@ namespace LibraryWebAPI.Controllers
             if (bookDetails == null)
                 return new JsonResult(NotFound());
             return new JsonResult(Ok(bookDetails));
+        }
+
+        [HttpDelete("{id}")]
+        public JsonResult Delete(int id, string secretKey)
+        {
+            var md5 = MD5.Create();
+            var secretKeyHash = Convert.ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(secretKey)));
+            if (secretKeyHash != _configuration["secretKey"])
+                return new JsonResult(Forbid());
+
+            try
+            {
+                _booksService.DeleteBook(id);
+            }
+            catch(NullReferenceException)
+            {
+                return new JsonResult(NotFound());
+            }
+            return new JsonResult(NoContent());
         }
     }
 }

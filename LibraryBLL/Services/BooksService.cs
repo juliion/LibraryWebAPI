@@ -17,15 +17,18 @@ namespace LibraryBLL.Services
             _dbContext = dbContext;
             _mapper = mapper;
         } 
-        public void DeleteBook(int id, string secretKey)
+        public void DeleteBook(int id)
         {
-            throw new NotImplementedException();
+            Book? book = _dbContext.Books?.Find(id);
+            if (book == null)
+                throw new NullReferenceException();
+            _dbContext.Books?.Remove(book);
+            _dbContext.SaveChanges();
         }
 
         public IEnumerable<BookDTO>? GetAllBooksOrderBy(string? order)
         {
             var books = _dbContext.Books;
-           
             IEnumerable<Book>? orderedBooks;
             if (order == "author")
                 orderedBooks = books?.OrderBy(book => book.Author);
