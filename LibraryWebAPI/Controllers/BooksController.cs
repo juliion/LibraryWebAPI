@@ -5,6 +5,7 @@ using LibraryBLL.DTOs.Responses;
 using LibraryBLL.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
+using FluentValidation;
 
 namespace LibraryWebAPI.Controllers
 {
@@ -14,10 +15,12 @@ namespace LibraryWebAPI.Controllers
     {
         private readonly IBooksService _booksService;
         private readonly IConfiguration _configuration;
-        public BooksController(IBooksService booksService, IConfiguration configuration)
+        private IValidator<SaveBookDTO> _bookValidator;
+        public BooksController(IBooksService booksService, IConfiguration configuration, IValidator<SaveBookDTO> bookValidator)
         {
             _booksService = booksService;
             _configuration = configuration;
+            _bookValidator = bookValidator;
         }
 
         [HttpGet]
@@ -61,6 +64,16 @@ namespace LibraryWebAPI.Controllers
                 return new JsonResult(NotFound());
             }
             return new JsonResult(NoContent());
+        }
+
+        [HttpPost("save")]
+        public JsonResult Save(SaveBookDTO saveBookDTO)
+        {
+            var validationRes = _bookValidator.Validate(saveBookDTO);
+            if(!validationRes.IsValid)
+                return new JsonResult(validationRes);
+            _booksService.SaveNewBook(saveBookDTO);
+            return new JsonResult(Ok(saveBookDTO.Id));
         }
     }
 }

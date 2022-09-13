@@ -66,9 +66,14 @@ namespace LibraryBLL.Services
             throw new NotImplementedException();
         }
 
-        public int SaveNewBook(SaveBookDTO saveBookDTO)
+        public void SaveNewBook(SaveBookDTO saveBookDTO)
         {
-            throw new NotImplementedException();
+            var book = _mapper.Map<SaveBookDTO, Book>(saveBookDTO);
+            var bookInDb = _dbContext.Books?.Find(saveBookDTO.Id);
+            if (bookInDb != null)
+                _dbContext.Books?.Remove(bookInDb);
+            _dbContext.Books?.Add(book);
+            _dbContext.SaveChanges();
         }
     }
 }
